@@ -1,0 +1,51 @@
+{
+  "name": "grebban-backend-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "live": "node server",
+    "watch": "nodemon server --ignore database/",
+    "start": "npm run watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iammuhit/grebban-backend-api.git"
+  },
+  "keywords": [
+    "nodejs",
+    "expressjs",
+    "localdb",
+    "backend",
+    "restapi"
+  ],
+  "authors": [
+    {
+      "name": "Nurul Amin Muhit",
+      "email": "me@muhit.me",
+      "homepage": "https://muhit.me"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iammuhit/grebban-backend-api/issues"
+  },
+  "homepage": "https://github.com/iammuhit/grebban-backend-api#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^2.11.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "fs-extra": "^9.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^3.10.1",
+    "node-fetch": "^2.6.1",
+    "node-uuid": "^1.4.8"
+  },
+  "devDependencies": {
+    "eslint": "^7.16.0",
+    "nodemon": "^2.0.6"
+  }
+}

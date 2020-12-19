@@ -1,0 +1,28 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "sourceType": "script",
+        "ecmaVersion": 2017
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "quotes": ["error", "single"],
+        "semi": "off",
+        "no-cond-assign": "off",
+        "no-prototype-builtins": "off",
+        "no-control-regex": "off",
+        "no-unused-vars": "off",
+        "no-useless-escape": "off",
+        "no-self-assign": "off",
+        "no-console": "off",
+        "no-empty": "off",
+        "no-undef": "warn",
+        "no-inner-declarations": "off",
+        "no-sparse-arrays": "off",
+        "no-redeclare": "off"
+    }
+}
