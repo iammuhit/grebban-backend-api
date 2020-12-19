@@ -11,6 +11,6 @@ Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
 The page will reload if you make edits.
 
-# Documentation
+## Documentation
 
-* [https://github.com/iammuhit/grebban-backend-api/wiki/API](Available API Endpoints)
+* [Available API Endpoints](https://github.com/iammuhit/grebban-backend-api/wiki/API)
