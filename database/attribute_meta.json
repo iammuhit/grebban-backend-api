@@ -1,0 +1,66 @@
+[
+    {
+        "name": "Color",
+        "code": "color",
+        "values": [
+            {
+                "name": "Brown",
+                "code": "brown"
+            },
+            {
+                "name": "Black",
+                "code": "black"
+            },
+            {
+                "name": "White",
+                "code": "white"
+            },
+            {
+                "name": "Blue",
+                "code": "blue"
+            },
+            {
+                "name": "Green",
+                "code": "green"
+            },
+            {
+                "name": "Red",
+                "code": "red"
+            }
+        ]
+    },
+    {
+        "name": "Category",
+        "code": "cat",
+        "values": [
+            {
+                "name": "Electric bikes",
+                "code": "cat_1_1"
+            },
+            {
+                "name": "Bikes",
+                "code": "cat_1"
+            },
+            {
+                "name": "BMX",
+                "code": "cat_1_2"
+            },
+            {
+                "name": "Cars",
+                "code": "cat_2"
+            },
+            {
+                "name": "Electric cars",
+                "code": "cat_2_1"
+            },
+            {
+                "name": "Hybrids",
+                "code": "cat_2_2"
+            },
+            {
+                "name": "Sportscars",
+                "code": "cat_2_3"
+            }
+        ]
+    }
+]
