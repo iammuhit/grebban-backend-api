@@ -82,9 +82,7 @@ class Model {
 
     sort(collections) {
         return new Promise((resolve, reject) => {
-            resolve(_.sortBy(collections, (doc) => {
-                return doc.name;
-            }));
+            resolve(_.sortBy(collections, doc => doc.name));
         });
     }
 
