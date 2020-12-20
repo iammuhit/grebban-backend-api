@@ -3,7 +3,7 @@ const config = require(path.resolve(process.env.PATH_BASE, 'config/pagination'))
 
 class Pagination {
 
-    create (total, limit, current_page) {
+    create(total, limit, current_page) {
         current_page = parseInt(current_page) || 1;
         limit = parseInt(limit) || config.limit;
         
