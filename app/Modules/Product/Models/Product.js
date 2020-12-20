@@ -13,37 +13,84 @@ class Product extends Model {
     }
 
     find(where = {}, options = {}) {
+        let self = this;
         let skip = parseInt(options.skip);
         let limit = parseInt(options.limit);
-        let collections = this.sortByName(this.collections);
 
         return new Promise((resolve, reject) => {
             if(!isNaN(skip) && !isNaN(limit)){
-                resolve(_.take(_.slice(_.filter(collections, where), skip), limit));
+                resolve(_.take(_.slice(_.filter(self.collections, where), skip), limit));
             } else {
-                resolve(_.filter(collections, where));
+                resolve(_.filter(self.collections, where));
             }
         });
     }
 
-    sortByName(collections) {
-        return _.sortBy(collections, doc => doc.name);
-    }
-
-    colors(metadata = {}) {
-        if(!(_.isEmpty(metadata))) {
-            this.colorCollections = metadata;
+    orderByName(collections) {
+        if(!(_.isEmpty(collections))) {
+            return collections = _.sortBy(collections, doc => doc.name);
         }
 
-        return this.colorCollections;
+        return this.collections = _.sortBy(this.collections, doc => doc.name);
     }
 
-    categories(metadata = {}) {
-        if(!(_.isEmpty(metadata))) {
-            this.categoryCollections = metadata;
-        }
+    colors() {
+        return _.find(this.attributeCollections, { code: 'color' });
+    }
 
-        return this.categoryCollections;
+    categories() {
+        return _.find(this.attributeCollections, { code: 'cat' });
+    }
+
+    rearrangeCollections(collections) {
+        collections = collections || this.collections;
+
+        return _.map(collections, (doc) => {
+            let colors = this._rearrangeColors(doc.attributes.color);
+            let categories = this._rearrangeCategories(doc.attributes.cat);
+            let attributes = [];
+
+            attributes.push(...colors);
+            attributes.push(...categories);
+
+            doc.attributes = attributes;
+
+            return doc;
+        });
+    }
+
+    _rearrangeColors(codes, attributes) {
+        let colors = this.colors();
+
+        codes = (codes !== undefined) ? codes.split(',') : [];
+        attributes = attributes || [];
+
+        _.forEach(codes.sort(), (code) => {
+            let color = _.find(colors.values, { code: code });
+
+            attributes.push({ name: colors.name, value: color.name });
+        });
+
+        return attributes;
+    }
+
+    _rearrangeCategories(codes, attributes) {
+        let categories = this.categories();
+        
+        codes = (codes !== undefined) ? codes.split(',') : [];
+        attributes =  attributes || [];
+
+        _.forEach(codes, (code) => {
+            let [key, parent, child] = code.split('_');
+            let category_parent = _.find(categories.values, { code: `${key}_${parent}` });
+            let category_child = _.find(categories.values, { code: `${key}_${parent}_${child}` });
+
+            let categoryValue = (category_parent && category_child) ? `${category_parent.name} > ${category_child.name}` : `${category_parent.name}`;
+
+            attributes.push({ name: categories.name, value: categoryValue });
+        });
+
+        return attributes;
     }
 
 }

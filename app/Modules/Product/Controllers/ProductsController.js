@@ -1,79 +1,55 @@
 const path = require('path');
 const fs = require('fs-extra');
 const _ = require('lodash');
-const Promise = require('bluebird');
 const fetch = require('node-fetch');
 
+const Promise = require('bluebird');
 const Product = require('../Models/Product');
 const Attribute = require('../Models/Attribute');
 const Color = require('../Models/Color');
+const Category = require('../Models/Category');
+const Pagination = require(path.resolve(process.env.PATH_APP, 'Helpers/Pagination'));
+const settings = require('../Config/Settings');
 
 fetch.Promise = Promise;
 
 const ProductsController = {
     all: async (req, res) => {
         try {
-            let dataHost = 'http://draft.grebban.com/backend';
-            let productsPath = dataHost + '/products.json';
-            let attributesPath = dataHost + '/attribute_meta.json';
-
-            let productsData = await fetch(productsPath)
+            let productsData = await fetch(settings.productsPath)
                 .then(res => res.json())
                 .then(doc => doc);
 
-            let attributesData = await fetch(attributesPath)
+            let attributesData = await fetch(settings.attributesPath)
                 .then(res => res.json())
                 .then(doc => doc);
 
             let product = new Product(productsData, attributesData);
             let attribute = new Attribute(attributesData);
-            let colorsData = await attribute.findOne({ code: 'color' });
-            let categoriesData = await attribute.findOne({ code: 'cat' });
 
-            let color = new Color(colorsData.values);
+            let colors = await attribute.findOne({ code: 'color' });
+            let categories = await attribute.findOne({ code: 'cat' });
 
-            let page = parseInt(req.param('page')) || 1;
-            let limit = parseInt(req.param('page_size')) || 10;
-            let offset = limit * (page - 1);
+            let color = new Color(colors.values);
+            let category = new Category(categories.values);
+
+            // Pagination
             let total = await product.count();
+            let pagination = (new Pagination).create(total, req.query.page_size, req.query.page);
 
-            let products = await product.find({}, { limit: limit, skip: offset });
+            product.orderByName(); // sort the whole document by Product Name
+            // product.rearrangeCollections(); // rearrange the whole document
 
-            products = _.map(products, (doc) => {
-                let colorCodes = doc.attributes.color;
-                let categoryCodes = doc.attributes.cat;
-                let attributes = [];
+            let products = await product.find({}, { limit: pagination.limit, skip: pagination.offset });
 
-                colorCodes = (colorCodes !== undefined) ? colorCodes.split(',') : [];
-                categoryCodes = (categoryCodes !== undefined) ? categoryCodes.split(',') : [];
-
-                _.forEach(colorCodes.sort(), (code) => {
-                    let color = _.find(colorsData.values, { code: code });
-
-                    attributes.push({ name: colorsData.name, value: color.name });
-                });
-
-                _.forEach(categoryCodes, (code) => {
-                    let [key, parent, child] = code.split('_');
-                    let parentCategory = _.find(categoriesData.values, { code: `${key}_${parent}` });
-                    let childCategory = _.find(categoriesData.values, { code: `${key}_${parent}_${child}` });
-
-                    let categoryValue = (parentCategory && childCategory) ? `${parentCategory.name} > ${childCategory.name}` : parentCategory.name;
-
-                    attributes.push({ name: categoriesData.name, value: categoryValue });
-                });
-
-                doc.attributes = attributes;
-
-                return doc;
-            });
+            products = product.rearrangeCollections(products); // rearrange only the retrieved data
 
             return res.json({
                 status: 'success',
                 data: {
                     products: products,
-                    page: page,
-                    totalPages: Math.ceil(total / limit)
+                    page: pagination.current_page,
+                    totalPages: pagination.total_pages
                 }
             });
         } catch (err) {
